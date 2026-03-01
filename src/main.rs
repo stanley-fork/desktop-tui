@@ -6,20 +6,40 @@ mod shortcut;
 mod utils;
 mod args;
 
-use std::process::exit;
+use std::fs;
+use crate::args::Args;
 use crate::desktop::MyDesktop;
 use crate::shortcut::parse_shortcut_dir;
 use appcui::backend::Type;
 use appcui::prelude::{App, Theme};
 use appcui::system::Themes;
 use clap::Parser;
-use crate::args::Args;
+use std::process::exit;
+use directories::ProjectDirs;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
-    let desktop_shortcuts = parse_shortcut_dir(args.shortcut_dir)?;
+    let shortcut_dir = args.shortcut_dir.unwrap_or_else(|| {
+        let project_directory = ProjectDirs::from(
+            "com",
+            "Julien-cpsn",
+            "desktop-tui"
+        )
+            .unwrap();
+
+        let config_directory = project_directory.config_dir().to_path_buf();
+
+        // Create the config dir if it does not exist
+        if !config_directory.exists() {
+            fs::create_dir_all(&config_directory).expect(&format!("Could not recursively create folder \"{}\"", config_directory.display()));
+        }
+
+        config_directory
+    });
+
+    let desktop_shortcuts = parse_shortcut_dir(shortcut_dir)?;
 
     let theme = Theme::new(Themes::Default);
 

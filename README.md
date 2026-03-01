@@ -50,11 +50,10 @@ You can replace `cargo run --` with `desktop-tui`
 cargo run -- <shortcut_folder_path>
 ```
 
-Or in release :
-
-```shell
-cargo run --release -- <shortcut_folder_path>
-```
+If no path is provided, desktop-tui will try using theses paths:
+- Linux: `/home/my_username/.config/desktop-tui`
+- macOS: `/Users/MyUsername/Library/Application Support/com.Julien-cpsn.desktop-tui`
+- Windows: `C:\Users\MyUsername\AppData\Roaming\Julien-cpsn\desktop-tui\config`
 
 ## Shortcut file
 
